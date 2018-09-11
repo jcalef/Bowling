@@ -56,6 +56,26 @@ class Frame:
         self.isSpare = isSpare
         self.isStrike = isStrike
 
+    def roll_ball(self, remaining_pins = 10):
+        valid_roll = False
+        while not valid_roll:
+            pins_input = input("Input 0-{}: ".format(remaining_pins))
+
+            try:
+                pins = int(pins_input)
+            
+                if 0 <= pins <= 10:
+                    valid_roll = True
+                else:
+                    print("Invalid Roll!!")
+
+            except ValueError:
+                print("Invalid Roll!!!")
+
+
+            
+        return pins
+
     def calculate_frame_score(self):
         self.frame_score += self.ball_one + self.ball_two + self.ball_three
         
@@ -65,17 +85,19 @@ def play_game():
     for frame_counter in range(1, 11):
         print("Frame {}".format(frame_counter))
         frame = Frame()
-        frame.ball_one = int(input("Input 0-10 for first ball: "))
+        print("First Ball")
+        frame.ball_one = frame.roll_ball()
 
         #if pins remain on second ball or a strike gained on the final frame
-        if frame.ball_one < 10 or frame_counter == 10:
-
+        if frame_counter == 10 or frame.ball_one < 10:
+            print("Second Ball")
             pins_remaining = 10-frame.ball_one if frame_counter < 10 or 0 < 10-frame.ball_one < 10 else 10
-            frame.ball_two = int(input("Input 0-{} for second ball: ".format(pins_remaining)))
+            frame.ball_two = frame.roll_ball(pins_remaining)
         
         #if spare or strike was gained on the 2nd ball of the final frame
-        if (frame.ball_two == 10) or (frame.ball_one + frame.ball_two == 10) and frame_counter == 10:
-            frame.ball_three = int((input("Input 0-10 for third ball: ")))
+        if frame_counter == 10 and ((frame.ball_two == 10) or (frame.ball_one + frame.ball_two == 10)):
+            print("Third Ball")
+            frame.ball_three = frame.roll_ball()
         
         if( frame.ball_one == 10):
             frame.isStrike = True
